@@ -18,6 +18,7 @@ public class AuthorService {
 
   public ReturnFormat<AuthorInfo> findall(ListCriteriaInfo listCriteriaInfo){
 
+	  
     try {
       return authorRepository.findByCriteria(listCriteriaInfo);
 
