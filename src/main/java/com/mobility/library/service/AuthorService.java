@@ -24,6 +24,7 @@ public class AuthorService {
     } catch (Exception ex) {
       ReturnFormat<AuthorInfo> returnFormat = new ReturnFormat<AuthorInfo>();
       returnFormat.setMessage("Fail");
+      System.err.println("testing commit");
       return  returnFormat;
     }
   }

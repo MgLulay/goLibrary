@@ -1,0 +1,6 @@
+{
+	"app" : "goLibrary",
+	"appname" : "goLibrary",
+	"ver" : "1.0.1",
+	"apiurl" : "http://localhost:8080/golibrary"
+}
