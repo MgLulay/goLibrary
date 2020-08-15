@@ -130,11 +130,7 @@ public class BookRepository implements IBookRepository{
 		// TODO Auto-generated method stub
 		String sql = " SELECT count(*) FROM Book WHERE deletedstatus <> 4 AND code =? AND systemkey <> ? ";
 		int flag = jdbcTemplate.queryForObject(sql, new Object[]{title, id}, Integer.class );
-		if (flag > 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return (flag > 0) ? true : false;
 	}
 
 	@Override
@@ -142,29 +138,36 @@ public class BookRepository implements IBookRepository{
 		// TODO Auto-generated method stub
 		 ReturnFormat<BookInfo> returnFormat = new ReturnFormat<>();
 		 List<BookInfo> bookInfoList = new ArrayList<>();
-		 String whereclause = "where 1=1 AND deletedstatus <> 4 ";
+		 String whereclause = "where 1=1 AND b.deletedstatus <> 4 ";
 		    int totalcount = 0;
-		    String sql = " SELECT systemkey, code, name, booktype, author, publisher,shortcode, barcode, available FROM Book ";
+		    String sql = " SELECT b.systemkey, b.code, b.name, b.booktype, b.author, b.publisher, b.shortcode, b.barcode, b.available "
+		    		+ "FROM Book b INNER JOIN Author a ON b.author = a.systemkey INNER JOIN Category c ON b.booktype = c.systemkey ";
 		    if (!listCriteriaInfo.getCode().equals("")) {
-		      whereclause += " AND code like N'%" + listCriteriaInfo.getCode() + "%' OR name like N'%" + listCriteriaInfo.getCode() + "%'";
+		      whereclause += " AND b.code like N'%" + listCriteriaInfo.getCode() + "%' OR b.name like N'%" + listCriteriaInfo.getCode() + "%'";
 		    }
 		    if (!listCriteriaInfo.getName().equals("")) {
-		      whereclause += " AND name like N'%" + listCriteriaInfo.getName() + "%'";
+		      whereclause += " AND b.name like N'%" + listCriteriaInfo.getName() + "%'";
 		    }
-		    if (listCriteriaInfo.getAvailableFlag() == 0) {
-		    	whereclause += " AND available <> 1 ";
+		    if(!listCriteriaInfo.getAuthor().equals(""))
+		    	whereclause += " AND a.code like N'%" + listCriteriaInfo.getAuthor() + "%' OR a.name like N'%"+ listCriteriaInfo.getAuthor() + "%'";
+		    
+		    if(!listCriteriaInfo.getBooktype().equals(""))
+		    	whereclause += " AND c.code like N'%" + listCriteriaInfo.getBooktype() + "%' OR c.name like N'%"+ listCriteriaInfo.getBooktype() + "%'";
+		    
+		    if (listCriteriaInfo.getAvailableFlag() == 1) {
+		    	whereclause += " AND b.available = 1 ";
 		    }
 		    sql += whereclause;
 		    int currentpage = listCriteriaInfo.getCurrentpage();
 		    int pagesize = listCriteriaInfo.getPagesize();
 		    int start = (currentpage - 1) * pagesize;
-		    if (pagesize > 0) {
-		      sql += " ORDER BY code, name OFFSET " + start + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ";
-		    } else {
-		      sql += " ORDER BY code, name  ";
-		    }
+		    if (pagesize > 0)
+		      sql += " ORDER BY b.code, b.name OFFSET " + start + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ";
+		    else
+		      sql += " ORDER BY b.code, b.name  ";
+		    
 		    bookInfoList= jdbcTemplate.query(sql, new BookInfoMapper());
-		    sql = " SELECT count(systemkey) as count FROM Book "+whereclause;
+		    sql = " SELECT count(b.systemkey) as count FROM Book b INNER JOIN Author a ON b.author = a.systemkey INNER JOIN Category c ON b.booktype = c.systemkey "+whereclause;
 		    totalcount= jdbcTemplate.queryForObject(sql, Integer.class);
 		    
 	    returnFormat.setTotalcount(totalcount);

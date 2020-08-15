@@ -7,6 +7,8 @@ public class ListCriteriaInfo {
 	private String duedate;
 	private String membersyskey;
 	private String systemkey;
+	private String author;
+	private String booktype;
 	private int status;
 	private int availableFlag;
 	private int currentpage;
@@ -19,6 +21,8 @@ public class ListCriteriaInfo {
 		this.duedate = "";
 		this.systemkey = "0";
 		this.membersyskey = "";
+		this.author = "";
+		this.booktype = "";
 		this.status = 0;
 		this.availableFlag = 0;
 		this.currentpage = 0;
@@ -103,5 +107,21 @@ public class ListCriteriaInfo {
 
 	public void setAvailableFlag(int availableFlag) {
 		this.availableFlag = availableFlag;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getBooktype() {
+		return booktype;
+	}
+
+	public void setBooktype(String booktype) {
+		this.booktype = booktype;
 	}
 }
