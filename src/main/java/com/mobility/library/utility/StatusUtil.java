@@ -7,7 +7,7 @@ package com.mobility.library.utility;
  * @author Admin
  *
  */
-public  class Status {
+public  class StatusUtil {
 	public static final int AVAILABLE = 0;
 	public static final int UNAVAILABLE = 1;
 	public static final int SAVE = 0;
@@ -23,4 +23,8 @@ public  class Status {
 	public static final String ENDWITH = "ew";
 	public static final String CONTAIN = "c";
 	public static final String EMPTYSTRING = "";
+	public static final String ZEROSTRING = "0";
+	
+	public static final String SUCCESS = "SUCCESS";
+	public static final String FAIL = "FAIL";
 }
