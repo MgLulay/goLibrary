@@ -154,7 +154,9 @@ public class BookRepository implements IBookRepository{
 		    if(!listCriteriaInfo.getBooktype().equals(""))
 		    	whereclause += " AND c.code like N'%" + listCriteriaInfo.getBooktype() + "%' OR c.name like N'%"+ listCriteriaInfo.getBooktype() + "%'";
 		    
-		    if (listCriteriaInfo.getAvailableFlag() == 1) {
+		    if (listCriteriaInfo.getAvailableFlag() == 0) {
+		    	whereclause += " AND b.available <> 1 ";
+		    }else if (listCriteriaInfo.getAvailableFlag() == 1) {
 		    	whereclause += " AND b.available = 1 ";
 		    }
 		    sql += whereclause;

@@ -16,7 +16,7 @@ import com.mobility.library.info.ReturnFormat;
 import com.mobility.library.repository.BookRentRepository;
 import com.mobility.library.repository.BookRepository;
 import com.mobility.library.repository.BookReturnRepository;
-import com.mobility.library.utility.Status;
+import com.mobility.library.utility.StatusUtil;
 import com.mobility.library.utility.SystemUtility;
 
 /**
@@ -54,7 +54,7 @@ public class BookReturnService {
 	          }
 	      }
 	      if (effectedrow > 0) {
-	    	  if(rentalHeaderInfo.getStatus() == Status.CONFIRM) {
+	    	  if(rentalHeaderInfo.getStatus() == StatusUtil.CONFIRM) {
 	    		  effectedrow = bookRentRepository.returnBook(rentalHeaderInfo);
 	    	  }
 	      }
@@ -110,8 +110,8 @@ public class BookReturnService {
 	      rentalDetailInfo.setSystemkey(SystemUtility.keygen());
 	      rentalDetailInfo.setParentsystemkey(rentalHeaderInfo.getSystemkey());
 	      effectedrow = returnRepository.saveReturnDetail(rentalDetailInfo);
-	      if((effectedrow > 0) && rentalHeaderInfo.getStatus() == Status.CONFIRM){
-	          effectedrow = bookRepository.updateStatusById(Status.AVAILABLE, rentalDetailInfo.getBooksystemkey());
+	      if((effectedrow > 0) && rentalHeaderInfo.getStatus() == StatusUtil.CONFIRM){
+	          effectedrow = bookRepository.updateStatusById(StatusUtil.AVAILABLE, rentalDetailInfo.getBooksystemkey());
 	      }
 	    }
 	    return effectedrow;

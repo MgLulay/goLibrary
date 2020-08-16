@@ -3,7 +3,7 @@ package com.mobility.library.repository;
 import com.mobility.library.info.RentalListDetailInfo;
 import com.mobility.library.info.ReportCriteriaInfo;
 import com.mobility.library.info.ReturnFormat;
-import com.mobility.library.utility.Status;
+import com.mobility.library.utility.StatusUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,14 +14,7 @@ import java.util.List;
 
 @Repository
 public class ReportRepository {
-	private static final String ALL = "all";
-	private static final String EQUAL = "eq";
-	private static final String BETWEEN = "bt";
-	private static final String BEGINWITH = "bw";
-	private static final String ENDWITH = "ew";
-	private static final String CONTAIN = "c";
-	private static final String EMPTYSTRING = "";
-	
+
   @Autowired
   private JdbcTemplate jdbcTemplate;
 
@@ -38,10 +31,10 @@ public class ReportRepository {
             " inner join Book book on d.booksystemkey = book.systemkey" +
             " inner join Author author on d.authorsystemkey = author.systemkey" ;
            
-    String whereClause= " WHERE 1=1 AND h.status <> "+ Status.VOID +" AND h.status <> "+ Status.RETURN +" AND h.status = "+ Status.CONFIRM;
+    String whereClause= " WHERE 1=1 AND h.status <> "+ StatusUtil.VOID +" AND h.status <> "+ StatusUtil.RETURN +" AND h.status = "+ StatusUtil.CONFIRM;
     
-    if(!reportCriteriaInfo.getDateOptr().equals(ALL)) {
-   	 if(!reportCriteriaInfo.getFromDueDate().equals(EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(EQUAL)) {
+    if(!reportCriteriaInfo.getDateOptr().equals(StatusUtil.ALL)) {
+   	 if(!reportCriteriaInfo.getFromDueDate().equals(StatusUtil.EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(StatusUtil.EQUAL)) {
    		 whereClause += " AND h.duedate = '" + reportCriteriaInfo.getFromDueDate() + "'";
    	 }
    	 else {
@@ -51,36 +44,36 @@ public class ReportRepository {
     else {
 	   whereClause += " AND h.duedate <= '" + reportCriteriaInfo.getFromDueDate() + "'";
     }
-    if(!reportCriteriaInfo.getMemberOptr().equals(ALL)) {
-    	if(reportCriteriaInfo.getMemberOptr().equals(EQUAL)) {
-    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+    if(!reportCriteriaInfo.getMemberOptr().equals(StatusUtil.ALL)) {
+    	if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.EQUAL)) {
+    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.code like '" + reportCriteriaInfo.getMemberCode() + "'";
 	 	    }
-	 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+	 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.name like '" + reportCriteriaInfo.getMemberName() + "'";
 	 	    }
     	}
-    	else if(reportCriteriaInfo.getMemberOptr().equals(CONTAIN)) {
-    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+    	else if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.CONTAIN)) {
+    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.code like '%" + reportCriteriaInfo.getMemberCode() + "%'";
 	 	    }
-	 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+	 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.name like '%" + reportCriteriaInfo.getMemberName() + "%'";
 	 	    }
     	}
-    	else if(reportCriteriaInfo.getMemberOptr().equals(BEGINWITH)) {
-    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+    	else if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.BEGINWITH)) {
+    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.code like '" + reportCriteriaInfo.getMemberCode() + "%'";
 	 	    }
-	 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+	 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.name like '" + reportCriteriaInfo.getMemberName() + "%'";
 	 	    }
     	}
-    	else if(reportCriteriaInfo.getMemberOptr().equals(ENDWITH)) {
-    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+    	else if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.ENDWITH)) {
+    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.code like '%" + reportCriteriaInfo.getMemberCode() + "'";
 	 	    }
-	 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+	 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 	 	    	whereClause += " AND m.name like '%" + reportCriteriaInfo.getMemberName() + "'";
 	 	    }
     	} 
@@ -136,89 +129,89 @@ public class ReportRepository {
 	            + " inner join T002 d on h.systemkey=d.parentsystemkey "
 	            + " inner join Member m on h.membersystemkey=m.systemkey "
 	            + " inner join Author au on d.authorsystemkey=au.systemkey " ;
-	    String whereClause= " WHERE 1=1 AND h.status <> "+ Status.VOID +" AND h.status <> "+ Status.RETURN +" AND h.status = "+ Status.CONFIRM;
+	    String whereClause= " WHERE 1=1 AND h.status <> "+ StatusUtil.VOID +" AND h.status <> "+ StatusUtil.RETURN +" AND h.status = "+ StatusUtil.CONFIRM;
 	    
-	    if(!reportCriteriaInfo.getDateOptr().equals(ALL)) {
-	    	 if(!reportCriteriaInfo.getFromDueDate().equals(EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(EQUAL)) {
+	    if(!reportCriteriaInfo.getDateOptr().equals(StatusUtil.ALL)) {
+	    	 if(!reportCriteriaInfo.getFromDueDate().equals(StatusUtil.EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(StatusUtil.EQUAL)) {
 	    		 whereClause += " AND h.docdate = '" + reportCriteriaInfo.getFromDueDate() + "'";
 	    	 }
-	    	 else if(!reportCriteriaInfo.getFromDueDate().equals(EMPTYSTRING) && !reportCriteriaInfo.getToDueDate().equals(EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(BETWEEN)) {
+	    	 else if(!reportCriteriaInfo.getFromDueDate().equals(StatusUtil.EMPTYSTRING) && !reportCriteriaInfo.getToDueDate().equals(StatusUtil.EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(StatusUtil.BETWEEN)) {
 	    		 whereClause += " AND h.docdate BETWEEN '" + reportCriteriaInfo.getFromDueDate() + "' AND '"+ reportCriteriaInfo.getToDueDate() + "'";
 	    	 }
-	    	 else if(!reportCriteriaInfo.getFromDueDate().equals(EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(BEGINWITH)) {
+	    	 else if(!reportCriteriaInfo.getFromDueDate().equals(StatusUtil.EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(StatusUtil.BEGINWITH)) {
 	    		 whereClause += " AND h.docdate LIKE '" + reportCriteriaInfo.getFromDueDate() + "%'";
 	    	 }
-	    	 else if(!reportCriteriaInfo.getFromDueDate().equals(EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(ENDWITH)) {
+	    	 else if(!reportCriteriaInfo.getFromDueDate().equals(StatusUtil.EMPTYSTRING) && reportCriteriaInfo.getDateOptr().equals(StatusUtil.ENDWITH)) {
 	    		 whereClause += " AND h.docdate LIKE '%" + reportCriteriaInfo.getFromDueDate() + "'";
 	    	 }
 	    }
 	    
-	    if(!reportCriteriaInfo.getBookOptr().equals(ALL)) {
-	    	 if(reportCriteriaInfo.getBookOptr().equals(EQUAL)) {
-	    		if (!reportCriteriaInfo.getBookCode().equals(EMPTYSTRING)) {
+	    if(!reportCriteriaInfo.getBookOptr().equals(StatusUtil.ALL)) {
+	    	 if(reportCriteriaInfo.getBookOptr().equals(StatusUtil.EQUAL)) {
+	    		if (!reportCriteriaInfo.getBookCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookcode like '" + reportCriteriaInfo.getBookCode() + "'";
 	 	 	    }
-	 	 	    if (!reportCriteriaInfo.getBookName().equals(EMPTYSTRING)) {
+	 	 	    if (!reportCriteriaInfo.getBookName().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookname like '" + reportCriteriaInfo.getBookName() + "'";
 	 	 	    }
 	    	 }
-	    	 else if(reportCriteriaInfo.getBookOptr().equals(CONTAIN)) {
-	    		if (!reportCriteriaInfo.getBookCode().equals(EMPTYSTRING)) {
+	    	 else if(reportCriteriaInfo.getBookOptr().equals(StatusUtil.CONTAIN)) {
+	    		if (!reportCriteriaInfo.getBookCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookcode like '%" + reportCriteriaInfo.getBookCode() + "%'";
 	 	 	    }
-	 	 	    if (!reportCriteriaInfo.getBookName().equals(EMPTYSTRING)) {
+	 	 	    if (!reportCriteriaInfo.getBookName().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookname like '%" + reportCriteriaInfo.getBookName() + "%'";
 	 	 	    }
 		    }
-	    	else if(reportCriteriaInfo.getBookOptr().equals(BEGINWITH)) {
-	    		if (!reportCriteriaInfo.getBookCode().equals(EMPTYSTRING)) {
+	    	else if(reportCriteriaInfo.getBookOptr().equals(StatusUtil.BEGINWITH)) {
+	    		if (!reportCriteriaInfo.getBookCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookcode like '" + reportCriteriaInfo.getBookCode() + "%'";
 	 	 	    }
-	 	 	    if (!reportCriteriaInfo.getBookName().equals(EMPTYSTRING)) {
+	 	 	    if (!reportCriteriaInfo.getBookName().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookname like '" + reportCriteriaInfo.getBookName() + "%'";
 	 	 	    }
 			}
-	    	else if(reportCriteriaInfo.getBookOptr().equals(ENDWITH)) {
-	    		if (!reportCriteriaInfo.getBookCode().equals(EMPTYSTRING)) {
+	    	else if(reportCriteriaInfo.getBookOptr().equals(StatusUtil.ENDWITH)) {
+	    		if (!reportCriteriaInfo.getBookCode().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookcode like '%" + reportCriteriaInfo.getBookCode() + "'";
 	 	 	    }
-	 	 	    if (!reportCriteriaInfo.getBookName().equals(EMPTYSTRING)) {
+	 	 	    if (!reportCriteriaInfo.getBookName().equals(StatusUtil.EMPTYSTRING)) {
 	 	 	    	whereClause += " AND d.bookname like '%" + reportCriteriaInfo.getBookName() + "'";
 	 	 	    }
 			}
 	    	 
 	    }
 	    
-	    if(!reportCriteriaInfo.getMemberOptr().equals(ALL)) {
-	    	if(reportCriteriaInfo.getMemberOptr().equals(EQUAL)) {
-	    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+	    if(!reportCriteriaInfo.getMemberOptr().equals(StatusUtil.ALL)) {
+	    	if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.EQUAL)) {
+	    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.code like '" + reportCriteriaInfo.getMemberCode() + "'";
 		 	    }
-		 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+		 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.name like '" + reportCriteriaInfo.getMemberName() + "'";
 		 	    }
 	    	}
-	    	else if(reportCriteriaInfo.getMemberOptr().equals(CONTAIN)) {
-	    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+	    	else if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.CONTAIN)) {
+	    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.code like '%" + reportCriteriaInfo.getMemberCode() + "%'";
 		 	    }
-		 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+		 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.name like '%" + reportCriteriaInfo.getMemberName() + "%'";
 		 	    }
 	    	}
-	    	else if(reportCriteriaInfo.getMemberOptr().equals(BEGINWITH)) {
-	    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+	    	else if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.BEGINWITH)) {
+	    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.code like '" + reportCriteriaInfo.getMemberCode() + "%'";
 		 	    }
-		 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+		 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.name like '" + reportCriteriaInfo.getMemberName() + "%'";
 		 	    }
 	    	}
-	    	else if(reportCriteriaInfo.getMemberOptr().equals(ENDWITH)) {
-	    		if (!reportCriteriaInfo.getMemberCode().equals(EMPTYSTRING)) {
+	    	else if(reportCriteriaInfo.getMemberOptr().equals(StatusUtil.ENDWITH)) {
+	    		if (!reportCriteriaInfo.getMemberCode().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.code like '%" + reportCriteriaInfo.getMemberCode() + "'";
 		 	    }
-		 	    if (!reportCriteriaInfo.getMemberName().equals(EMPTYSTRING)) {
+		 	    if (!reportCriteriaInfo.getMemberName().equals(StatusUtil.EMPTYSTRING)) {
 		 	    	whereClause += " AND m.name like '%" + reportCriteriaInfo.getMemberName() + "'";
 		 	    }
 	    	}

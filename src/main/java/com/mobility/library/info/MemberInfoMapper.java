@@ -24,6 +24,10 @@ public class MemberInfoMapper implements RowMapper<MemberInfo>{
 	      memberInfo.setStarteddate(rs.getString("starteddate"));
 	      memberInfo.setAddress(rs.getString("address"));
 	      memberInfo.setNrcno(rs.getString("nrcno"));
+	      memberInfo.setDob(rs.getString("dob"));
+	      memberInfo.setGender(rs.getString("gender"));
+	      memberInfo.setPhone(rs.getString("phone"));
+	      memberInfo.setEmail(rs.getString("email"));
 	      memberInfo.setDeletedstatus(rs.getInt("deletedstatus"));
 		return memberInfo;
 	}

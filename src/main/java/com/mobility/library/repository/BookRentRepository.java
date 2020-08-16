@@ -1,5 +1,7 @@
 package com.mobility.library.repository;
 
+import com.mobility.library.info.BookInfo;
+import com.mobility.library.info.BookInfoMapper;
 import com.mobility.library.info.ListCriteriaInfo;
 import com.mobility.library.info.RentalDetailInfo;
 import com.mobility.library.info.RentalDetailMapper;
@@ -7,7 +9,7 @@ import com.mobility.library.info.RentalHeaderInfo;
 import com.mobility.library.info.RentalHeaderMapper;
 import com.mobility.library.info.ReturnFormat;
 import com.mobility.library.repository.impl.IRentRepository;
-import com.mobility.library.utility.Status;
+import com.mobility.library.utility.StatusUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class BookRentRepository implements IRentRepository{
@@ -106,7 +110,7 @@ public class BookRentRepository implements IRentRepository{
 	@Override
 	public int deleteById(String id) {
 		// TODO Auto-generated method stub
-		return jdbcTemplate.update("update T001 set status =? WHERE systemkey =? ", Status.VOID, id);
+		return jdbcTemplate.update("update T001 set status =? WHERE systemkey =? ", StatusUtil.VOID, id);
 	}
 	
 	@Override
@@ -120,7 +124,7 @@ public class BookRentRepository implements IRentRepository{
 	public List<RentalHeaderInfo> findAll() {
 		// TODO Auto-generated method stub
 		 String sql = " SELECT h.systemkey, h.refno, h.docdate, h.duedate, h.returndate, h.status,h.remark, m.systemkey as membersyskey, m.name as membername" +
-		            " FROM T001 h inner join Member m on h.membersystemkey=m.systemkey WHERE AND h.status <> "+ Status.VOID +"";
+		            " FROM T001 h inner join Member m on h.membersystemkey=m.systemkey WHERE AND h.status <> "+ StatusUtil.VOID +"";
 		return jdbcTemplate.query(sql, new RentalHeaderMapper());
 	}
 	
@@ -133,7 +137,7 @@ public class BookRentRepository implements IRentRepository{
 		    
 		    String sql = " SELECT h.systemkey, h.docdate, h.duedate, h.returndate, m.systemkey as membersyskey, m.name as membername, h.refno, h.status, h.remark " +
 		            " FROM T001 h inner join Member m on h.membersystemkey=m.systemkey " ;
-		    String whereClause= " WHERE 1=1 AND h.status <> "+ Status.VOID +"";
+		    String whereClause= " WHERE 1=1 AND h.status <> "+ StatusUtil.VOID +"";
 		    if (!listCriteriaInfo.getDocdate().equals("")) {
 		    	whereClause += " AND h.docdate = '" + listCriteriaInfo.getDocdate() + "'";
 		    }
@@ -173,7 +177,7 @@ public class BookRentRepository implements IRentRepository{
 	public RentalHeaderInfo findById(String id) {
 		// TODO Auto-generated method stub
 		    String sql = " SELECT h.systemkey, h.refno, h.docdate, h.duedate, h.returndate, h.status,h.remark, m.systemkey as membersyskey, m.name as membername" +
-		            " FROM T001 h inner join Member m on h.membersystemkey=m.systemkey WHERE h.status <> "+ Status.VOID +" AND h.systemkey =? ";
+		            " FROM T001 h inner join Member m on h.membersystemkey=m.systemkey WHERE h.status <> "+ StatusUtil.VOID +" AND h.systemkey =? ";
 		    
 		    RowMapper<RentalHeaderInfo> rowMapper = new BeanPropertyRowMapper<RentalHeaderInfo>(RentalHeaderInfo.class);
 		    RentalHeaderInfo rentalHeaderInfo = jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -198,7 +202,7 @@ public class BookRentRepository implements IRentRepository{
 		// TODO Auto-generated method stub
 		String sql = " UPDATE T001 SET status= ?,  returndate =? WHERE membersystemkey = ?";
 	    return jdbcTemplate.update(sql,
-	    		Status.RETURN,
+	    		StatusUtil.RETURN,
 	    		rentalHeaderInfo.getReturndate(),
 	    		rentalHeaderInfo.getMembersyskey()
 				);
@@ -214,5 +218,19 @@ public class BookRentRepository implements IRentRepository{
 		} else {
 			return false;
 		}
+	}
+	
+	public BookInfo checkAvailableBook(List<RentalDetailInfo> list) {
+		String sql = " SELECT systemkey, code, name, booktype, author, publisher,shortcode, barcode, available FROM Book WHERE deletedstatus <> 4 AND available = 1 ORDER BY code, name  ";
+		List<BookInfo> rList = jdbcTemplate.query(sql, new BookInfoMapper());
+		Set<String> acceptableKey = 
+				list.stream()
+			         .map(RentalDetailInfo::getBooksystemkey)
+			         .collect(Collectors.toSet());
+		List<BookInfo> temp = rList.stream()
+				.filter(c -> acceptableKey.contains(c.getSystemkey()))
+				.collect(Collectors.toList());
+		
+		return (temp.size() > 0) ? temp.get(0) : null;
 	}
 }
