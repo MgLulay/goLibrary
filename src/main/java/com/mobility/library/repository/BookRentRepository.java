@@ -156,9 +156,9 @@ public class BookRentRepository implements IRentRepository{
 				int currentPage = listCriteriaInfo.getCurrentpage();
 				int pageSize = listCriteriaInfo.getPagesize();
 				int start = (currentPage - 1) * pageSize;
-				sql += " ORDER BY h.docdate, h.refno  OFFSET  " + start + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY "; // LIMIT ?, ?
+				sql += " ORDER BY h.docdate desc, h.refno desc OFFSET  " + start + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY "; // LIMIT ?, ?
 			}else {
-				sql += " ORDER BY h.docdate, h.refno";
+				sql += " ORDER BY h.docdate desc, h.refno desc";
 			}
 			dataList = jdbcTemplate.query(sql, new RentalHeaderMapper());
 			returnFormat.setList(dataList);

@@ -3,6 +3,7 @@ package com.mobility.library.service;
 import com.mobility.library.info.RentalListDetailInfo;
 import com.mobility.library.info.ReportCriteriaInfo;
 import com.mobility.library.info.ReturnFormat;
+import com.mobility.library.info.TopRentBookInfo;
 import com.mobility.library.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,16 @@ public class ReportService {
 	    }
 	 return returnFormat;
   }
+  
+	public ReturnFormat<TopRentBookInfo> getTopRentBook(ReportCriteriaInfo criteriaInfo) {
+		ReturnFormat<TopRentBookInfo> returnFormat = new ReturnFormat<>();
+		try {
+			returnFormat = reportRepository.getTopRentBook(criteriaInfo);
+
+		} catch (Exception ex) {
+			returnFormat.setMessage(ex.getMessage());
+		}
+		return returnFormat;
+	}
   
 }

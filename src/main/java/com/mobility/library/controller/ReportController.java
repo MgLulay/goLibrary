@@ -3,6 +3,7 @@ package com.mobility.library.controller;
 import com.mobility.library.info.RentalListDetailInfo;
 import com.mobility.library.info.ReportCriteriaInfo;
 import com.mobility.library.info.ReturnFormat;
+import com.mobility.library.info.TopRentBookInfo;
 import com.mobility.library.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,5 +26,10 @@ public class ReportController {
 	@PostMapping("/getReqBookDtlsReport")
 	public ReturnFormat<RentalListDetailInfo> getRequestBookListReport(@RequestBody ReportCriteriaInfo criteriaInfo) {
 		return reportService.getRequestBookListReport(criteriaInfo);
+	}
+	
+	@PostMapping("/getTopRentBook")
+	public ReturnFormat<TopRentBookInfo> getTopRentBook(@RequestBody ReportCriteriaInfo criteriaInfo){
+		return reportService.getTopRentBook(criteriaInfo);
 	}
 }

@@ -4,6 +4,8 @@ public class ReportCriteriaInfo {
 	private String dateOptr;
 	private String fromDueDate;
 	private String toDueDate;
+	private String fromDocDate;
+	private String toDocDate;
 	private String memberOptr;
 	private String memberCode;
 	private String memberName;
@@ -18,6 +20,8 @@ public class ReportCriteriaInfo {
 		//super();
 		this.fromDueDate = "";
 		this.toDueDate = "";
+		this.fromDocDate ="";
+		this.toDocDate = "";
 		this.memberCode = "";
 		this.memberName = "";
 		this.bookCode = "";
@@ -29,6 +33,27 @@ public class ReportCriteriaInfo {
 		this.bookOptr = "all";
 		this.dateOptr = "all";
 	}
+
+	
+	public String getFromDocDate() {
+		return fromDocDate;
+	}
+
+
+	public void setFromDocDate(String fromDocDate) {
+		this.fromDocDate = fromDocDate;
+	}
+
+
+	public String getToDocDate() {
+		return toDocDate;
+	}
+
+
+	public void setToDocDate(String toDocDate) {
+		this.toDocDate = toDocDate;
+	}
+
 
 	public String getDateOptr() {
 		return dateOptr;

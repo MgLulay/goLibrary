@@ -3,6 +3,7 @@ package com.mobility.library.repository;
 import com.mobility.library.info.RentalListDetailInfo;
 import com.mobility.library.info.ReportCriteriaInfo;
 import com.mobility.library.info.ReturnFormat;
+import com.mobility.library.info.TopRentBookInfo;
 import com.mobility.library.utility.StatusUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -255,6 +256,67 @@ public class ReportRepository {
 	    returnFormat.setMessage("Success");
 	  return returnFormat;
   }
+  
+  public ReturnFormat<TopRentBookInfo> getTopRentBook(ReportCriteriaInfo reportCriteriaInfo){
+	  
+	  ReturnFormat<TopRentBookInfo> returnFormat = new ReturnFormat<>();
+	  List<TopRentBookInfo> topRentList = new ArrayList<>();
+	  String whereclause = "";
+	  String orderclause = "";
+	  String groupbyclause = "";
+	  int totalcount = 0;
+	  String query = "select  b.systemkey, b.name, b.code , author.name as authorname, count(b.systemkey) as TotalRentCount "  
+	  				 + " from T001 h inner join T002 d on h.systemkey = d.parentsystemkey " 
+	  				 + " inner join Book b on d.booksystemkey = b.systemkey "	  				 
+	  				 + " inner join Author author on b.author = author.systemkey "
+	  				 + " where  h.status <> " + StatusUtil.VOID;
+	  
+	  if(reportCriteriaInfo.getFromDocDate() != "") {
+		  whereclause += " and h.docdate >= '" + reportCriteriaInfo.getFromDocDate() + "'" ;
+	  }
+	  
+	  if(reportCriteriaInfo.getToDocDate() != "") {
+		  whereclause += " and h.docdate <= '" + reportCriteriaInfo.getToDocDate() + "'" ;
+	  }
+	
+	  groupbyclause = " group by  b.systemkey, b.name, b.code, author.name ";
+	  if(reportCriteriaInfo.getPagesize() !=0) {
+			int currentPage = reportCriteriaInfo.getCurrentpage();
+			int pageSize = reportCriteriaInfo.getPagesize();
+			int start = (currentPage - 1) * pageSize;
+			orderclause += " ORDER BY count(b.systemkey) desc  OFFSET  " + start + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY "; 
+		}else {
+			orderclause += " ORDER BY count(b.systemkey) desc ";
+		}
+	  query += whereclause + groupbyclause + orderclause ;
+	  topRentList = jdbcTemplate.query(query, (rs, rowNum)-> {
+		  TopRentBookInfo topRentBookInfo = new TopRentBookInfo();
+		  topRentBookInfo.setBooksystemkey(rs.getString("systemkey"));
+		  topRentBookInfo.setCode(rs.getString("code"));
+		  topRentBookInfo.setName(rs.getString("name"));
+		  topRentBookInfo.setAuthorname(rs.getString("authorname"));
+		  topRentBookInfo.setTotalCount(rs.getInt("TotalRentCount"));
+		  
+		  return topRentBookInfo;
+	  }) ;
+	  
+		returnFormat.setList(topRentList);
+
+		if (reportCriteriaInfo.getPagesize() != 0) {
+			query = " select count(*) from "
+					+ " (select  b.systemkey, b.name, b.code , author.name as authorname, count(b.systemkey) as TotalRentCount "
+					+ "  from T001 h inner join T002 d on h.systemkey = d.parentsystemkey "
+					+ " inner join Book b on d.booksystemkey = b.systemkey "
+					+ "  inner join Author author on b.author = author.systemkey ";
+			query += whereclause + groupbyclause + ") src";
+			totalcount= jdbcTemplate.queryForObject(query, Integer.class);
+			returnFormat.setTotalcount(totalcount);
+		}
+		returnFormat.setMessage("Success");
+		return returnFormat;
+	  
+  }
+   
   
   
 }
