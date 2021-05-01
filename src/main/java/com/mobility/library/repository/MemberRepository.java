@@ -41,7 +41,7 @@ public class MemberRepository implements IMemberRepository {
 		String whereclause = "";
 		int totalcount = 0;
 		String sql = " SELECT systemkey, createddate, modifieddate, code, name, starteddate, address, nrcno, dob, gender, phone, email, deletedstatus FROM Member "
-				+ " WHERE deletedstatus <> 1";
+				+ " WHERE deletedstatus <> 4";
 		if (!listCriteriaInfo.getCode().equals("")) {
 			whereclause += " AND code like N'%" + listCriteriaInfo.getCode() + "%'";
 		}
@@ -105,7 +105,7 @@ public class MemberRepository implements IMemberRepository {
 	@Override
 	public List<MemberInfo> findAll() {
 		// TODO Auto-generated method stub
-		String sql = " SELECT systemkey,starteddate, code, name, address, nrcno, dob, gender, phone, email, deletedstatus FROM Member WHERE deletedstatus <> 1 ";
+		String sql = " SELECT systemkey,starteddate, code, name, address, nrcno, dob, gender, phone, email, deletedstatus FROM Member WHERE deletedstatus <> 4 ";
 		return jdbcTemplate.query(sql, new MemberInfoMapper());
 	}
 

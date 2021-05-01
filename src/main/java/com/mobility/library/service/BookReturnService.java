@@ -61,11 +61,11 @@ public class BookReturnService {
 	      
 	      if (effectedrow > 0) {
 	    	  
-	        returnFormat.setMessage("Success");
+	        returnFormat.setMessage(StatusUtil.SUCCESS);
 	        returnFormat.setTotalcount(effectedrow);
 	        returnFormat.getList().add(rentalHeaderInfo);
 	      } else {
-	        returnFormat.setMessage("Fail");
+	        returnFormat.setMessage(StatusUtil.FAIL);
 	      }
 
 	    } catch (Exception ex) {

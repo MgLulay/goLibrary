@@ -4,6 +4,11 @@ import com.mobility.library.info.ListCriteriaInfo;
 import com.mobility.library.info.MemberInfo;
 import com.mobility.library.info.ReturnFormat;
 import com.mobility.library.service.MemberService;
+
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,5 +31,9 @@ public class MemberController {
   @PostMapping("/save")
   public ReturnFormat<MemberInfo> save(@RequestBody MemberInfo memberInfo){
     return memberService.save(memberInfo);
+  }
+  @GetMapping("/delete/{id}")
+	public HashMap<String, String> deleteData(@PathVariable("id") String id, HttpServletRequest request) {
+		return memberService.delete(id);
   }
 }

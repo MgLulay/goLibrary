@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -68,4 +69,24 @@ public class MemberService {
     }
     return returnFormat;
   }
+  public HashMap<String, String> delete(String id) {
+		HashMap<String, String> result = new HashMap<>();
+		int effectedRow = 0;
+		try {
+			if(!"0".equals(id) && !"".equals(id)) {
+				effectedRow = memberRepository.deleteById(id);
+			}else {
+				result.put("message", "CAN'T DELETE ");
+				return result;
+			}
+			if (effectedRow > 0) {
+				result.put("message", "SUCCESS");
+			} else {
+				result.put("message", "FAIL");
+			}
+		} catch (Exception e) {
+			result.put("message", "FAIL");
+		}
+		return result;
+	}
 }
