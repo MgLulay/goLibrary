@@ -23,7 +23,7 @@ public class ListCriteriaInfo {
 		this.membersyskey = "";
 		this.author = "";
 		this.booktype = "";
-		this.status = 0;
+		this.status = -1;
 		this.availableFlag = 0;
 		this.currentpage = 0;
 		this.pagesize = 0;

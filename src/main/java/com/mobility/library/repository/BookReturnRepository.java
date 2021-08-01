@@ -169,7 +169,9 @@ public class BookReturnRepository implements IReturnRepository{
 				    if (!listCriteriaInfo.getCode().equals("")) {
 				    	whereClause += " AND h.refno like '%" + listCriteriaInfo.getCode() + "%'";
 				    }
-				    //whereClause += " AND h.status = " + listCriteriaInfo.getStatus();
+				    if (listCriteriaInfo.getStatus() != -1 && listCriteriaInfo.getStatus() != 2) {
+				    	whereClause += " AND h.status = " + listCriteriaInfo.getStatus();
+				    }
 				    sql += whereClause;
 					if(listCriteriaInfo.getPagesize() !=0) {
 						int currentPage = listCriteriaInfo.getCurrentpage();
@@ -270,7 +272,7 @@ public class BookReturnRepository implements IReturnRepository{
 		List<RentalHeaderInfo> dataList = new ArrayList<>();
 		int totalCount= 0;
 		// TODO Auto-generated method stub
-		String sql = "  SELECT h.refno, h.systemkey, h.docdate, h.duedate, member.name, member.systemkey " +
+		String sql = "  SELECT h.refno, h.systemkey, h.docdate, h.duedate, h.status, member.name, member.systemkey " +
 						" FROM T001 h  " +
 						" inner join Member member on h.membersystemkey= member.systemkey	" +
 						" where h.status =1 and member.systemkey = " + memberkey ;
@@ -286,6 +288,7 @@ public class BookReturnRepository implements IReturnRepository{
 			RentalHeaderInfo result = new RentalHeaderInfo();
 			result.setSystemkey(rs.getString("systemkey"));
 			result.setRefno(rs.getString("refno"));
+			result.setStatus(rs.getInt("status"));
 			result.setDocdate(rs.getString("docdate"));
 			result.setDuedate(rs.getString("duedate"));
 			result.setMembersyskey(rs.getString("systemkey"));

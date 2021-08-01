@@ -3,6 +3,8 @@ package com.mobility.library.repository;
 import com.mobility.library.info.BookInfo;
 import com.mobility.library.info.BookInfoMapper;
 import com.mobility.library.info.ListCriteriaInfo;
+import com.mobility.library.info.MemberInfo;
+import com.mobility.library.info.MemberInfoMapper;
 import com.mobility.library.info.RentalDetailInfo;
 import com.mobility.library.info.RentalDetailMapper;
 import com.mobility.library.info.RentalHeaderInfo;
@@ -147,7 +149,7 @@ public class BookRentRepository implements IRentRepository{
 		    if (!listCriteriaInfo.getCode().equals("")) {
 		    	whereClause += " AND h.refno like '%" + listCriteriaInfo.getCode() + "%'";
 		    }
-		    if (listCriteriaInfo.getStatus() !=0) {
+		    if (listCriteriaInfo.getStatus() > -1) {
 		    	whereClause += " AND h.status = " + listCriteriaInfo.getStatus();
 		    }
 		    
@@ -231,6 +233,13 @@ public class BookRentRepository implements IRentRepository{
 				.filter(c -> acceptableKey.contains(c.getSystemkey()))
 				.collect(Collectors.toList());
 		
+		return (temp.size() > 0) ? temp.get(0) : null;
+	}
+	
+	public MemberInfo checkMemberByRent(String id) {
+		// TODO Auto-generated method stub
+		String sql = "SELECT m.systemkey, m.starteddate, m.code, m.name, m.address, m.nrcno, m.dob, m.gender, m.phone, m.email, m.deletedstatus FROM T001 h INNER JOIN Member m ON h.membersystemkey=m.systemkey WHERE m.deletedstatus <> 4 and h.status =1 AND h.membersystemkey =? ";
+		List<MemberInfo> temp = jdbcTemplate.query(sql, new Object[]{id}, new MemberInfoMapper());
 		return (temp.size() > 0) ? temp.get(0) : null;
 	}
 }

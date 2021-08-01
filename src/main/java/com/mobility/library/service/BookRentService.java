@@ -2,6 +2,7 @@ package com.mobility.library.service;
 
 import com.mobility.library.info.BookInfo;
 import com.mobility.library.info.ListCriteriaInfo;
+import com.mobility.library.info.MemberInfo;
 import com.mobility.library.info.RentalDetailInfo;
 import com.mobility.library.info.RentalHeaderInfo;
 import com.mobility.library.info.ReturnFormat;
@@ -26,13 +27,22 @@ public class BookRentService {
 		int effectedrow = 0;
 		ReturnFormat<RentalHeaderInfo> returnFormat = new ReturnFormat<>();
 		try {
+			if (rentalHeaderInfo.getStatus() == StatusUtil.CONFIRM) {
+				MemberInfo member = bookRentRepository.checkMemberByRent(rentalHeaderInfo.getMembersyskey());
+				if (member != null) {
+					returnFormat.setMessage(
+							member.getName() + " is not available to rent! \nPlease return previous rent book!");
+					return returnFormat;
+				}
+			}
 			BookInfo book = bookRentRepository.checkAvailableBook(rentalHeaderInfo.getRentalDetailInfoList());
 			if (book != null) {
-				System.out.println("Not ->" + book.getName());
-				returnFormat.setMessage(book.getName()+" is not available book!");
+				// System.out.println("Not ->" + book.getName());
+				returnFormat.setMessage(book.getName() + " is not available book!");
 				return returnFormat;
 			}
-			if (rentalHeaderInfo.getSystemkey().equals(StatusUtil.ZEROSTRING) || rentalHeaderInfo.getSystemkey().equals(StatusUtil.EMPTYSTRING)) {
+			if (rentalHeaderInfo.getSystemkey().equals(StatusUtil.ZEROSTRING)
+					|| rentalHeaderInfo.getSystemkey().equals(StatusUtil.EMPTYSTRING)) {
 				rentalHeaderInfo.setSystemkey(SystemUtility.keygen());
 				rentalHeaderInfo.setRefno(bookRentRepository.getMaxRefNo());
 				effectedrow = bookRentRepository.saveRentalHeader(rentalHeaderInfo);
@@ -96,7 +106,8 @@ public class BookRentService {
 			rentalDetailInfo.setParentsystemkey(rentalHeaderInfo.getSystemkey());
 			effectedrow = bookRentRepository.saveRentalDetail(rentalDetailInfo);
 			if ((effectedrow > 0) && rentalHeaderInfo.getStatus() == StatusUtil.CONFIRM) {
-				effectedrow = bookRepository.updateStatusById(StatusUtil.UNAVAILABLE, rentalDetailInfo.getBooksystemkey());
+				effectedrow = bookRepository.updateStatusById(StatusUtil.UNAVAILABLE,
+						rentalDetailInfo.getBooksystemkey());
 			}
 		}
 		return effectedrow;
@@ -138,4 +149,5 @@ public class BookRentService {
 		}
 		return returnFormat;
 	}
+
 }
