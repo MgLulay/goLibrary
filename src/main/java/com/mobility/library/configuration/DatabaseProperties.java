@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DatabaseProperties {
+	
 	private String title;
+	
 	private String databaseurl;
 	
 	public String getTitle() {
